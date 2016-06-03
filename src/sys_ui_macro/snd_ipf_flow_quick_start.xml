@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+  <h3>Interactive Process Flow - Quick Start</h3>
+  <p>Welcome to SNDs Interactive Process Flow. Here you can configure clickable process flows simply and quickly</p>
+  <p>Setting up interactive process flows is easy, just follow these simple steps:</p>
+  <ol>
+    <li>
+      Select a name for your process flow
+    </li>
+    <li>
+      Select the table that this process flow should run on.
+    </li>
+    <li>
+      Pick a style for your process flow
+    </li>
+    <li>
+      Select a dispaly condition using the condition builder. This determines when this process flow should be displayed, allowing you to configure many process flows for one table.
+    </li>
+  </ol>
+  <p>Hit submit and then configure the process flow elements. Once these are configured you're ready to go. Configure the form for the selected table and add the "SND - Interactive Process Flow" formatter.</p>
+</j:jelly>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+  <h3>Interactive Process Flow Elements - Quick Start</h3>
+  <p>Welcome to SNDs Interactive Process Flow Elements. Here you can configure the individual elements that make up a process flow simply and quickly</p>
+  <p>Setting up process flow elements is easy, just follow these simple steps:</p>
+  <ol>
+    <li>
+      Select a name for your process flow - this is the internal name
+    </li>
+    <li>
+      Select a label for your process flow element - this text will be displayed to the user
+    </li>
+    <li>
+      Set the order of this element, the lower the order, the further to the left this element will be displayed
+    </li>
+    <li>
+      Select a condition that signifies this element is "selected". E.g. if configuring a Resolved element for the incident process flow, the condition would be "state is resolved".
+    </li>
+  </ol>
+  <p>Now we get to the interesting parts! The client script field allows you to add client code which runs when the user clicks this process flow element. Taking the incident resolved example from above, here we would add <code>g_form.setValue('state', 6);</code></p>
+  <p>Next we have the Access script. The access script runs server side and controls whether the current user can click a particular process flow element. By default it is set to <code>current.canWrite()</code>.</p>
+</j:jelly>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+  <g2:evaluate jelly="true">
+    var process_flow,
+        flows,
+        selected_id = "";
+
+    process_flow = new GlideRecord('x_snd_ipf_process_flow');
+    process_flow.addQuery('table', current.getRecordClassName());
+    process_flow.addQuery('active', true);
+    process_flow.orderBy('order');
+    process_flow.query();
+    
+    while (process_flow.next()) {
+      if (GlideFilter.checkRecord(current, process_flow.condition)) {
+        break;
+      }
+    }
+
+    flows = new GlideRecord('x_snd_ipf_process_flow_element');
+    flows.addQuery('process_flow', process_flow.sys_id);
+    flows.addQuery('table', current.getRecordClassName());
+    flows.addQuery('active', true);
+    flows.orderBy('order');
+    flows.query();
+  </g2:evaluate>
+  <style type="text/css">
+    $[HTML:process_flow.style.css]
+  </style>
+  <div style="text-align:center">
+    <ol class="snd_process_flow">
+      <j2:while test="$[flows.next()]">
+        <g2:evaluate jelly="true">
+          var evaluator,
+              is_past = false,
+              is_available = false,
+              is_current = false,
+              id,
+              on_click;
+
+          evaluator = new GlideScopedEvaluator();
+          evaluator.putVariable('current', current);
+
+          is_past = is_current == true ? true : false;
+
+          is_available = evaluator.evaluateScript(flows, 'access_script');
+          is_current = GlideFilter.checkRecord(current, flows.condition);
+
+          id = flows.table + '_' + flows.name;
+          
+          if (is_available) {
+            on_click = flows.client_script + ';advancedProcessFlowControl(\'' + 
+              flows.table + '_' + flows.name + '\');';
+          } else {
+            on_click = "";
+          }
+
+          selected_id = is_current ? id : selected_id;
+        </g2:evaluate>
+        <j2:choose>
+          <j2:when test="$[is_current]">
+            <j2:set var="jvar_flow_class" value="selected"/>
+          </j2:when>
+          <j2:when test="$[!is_current &amp;&amp; is_available]">
+            <j2:set var="jvar_flow_class" value="available"/>
+          </j2:when>
+          <j2:otherwise>
+            <j2:set var="jvar_flow_class" value="unavailable"/>
+          </j2:otherwise>
+        </j2:choose>
+        <li id="$[id]" class="$[jvar_flow_class]" onClick="$[on_click]">
+          $[flows.label]
+        </li>
+      </j2:while>
+    </ol>
+  </div>
+  <script>
+    var old_id = $[selected_id].id,
+        previous_id = $[selected_id].id;
+
+    // Control script for onClick
+    function advancedProcessFlowControl(new_id) {
+      $(new_id).className = "select";
+      if (new_id == old_id) {
+        g_form.save();
+      } else {
+        $(old_id).className = old_id == previous_id ? "selected" : "available";
+      }
+      old_id = new_id;
+    }
+  </script>
+</j:jelly>
