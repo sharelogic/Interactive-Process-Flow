@@ -5,30 +5,30 @@
         flows,
         selected_id = "";
 
-    process_flow = new GlideRecord('x_snd_ipf_process_flow');
-    process_flow.addQuery('table', current.getRecordClassName());
-    process_flow.addQuery('active', true);
-    process_flow.orderBy('order');
+    process_flow = new GlideRecord('u_snd_process_flow');
+    process_flow.addQuery('u_table', current.getRecordClassName());
+    process_flow.addQuery('u_active', true);
+    process_flow.orderBy('u_order');
     process_flow.query();
-    
+
     while (process_flow.next()) {
-      if (GlideFilter.checkRecord(current, process_flow.condition)) {
+      if (GlideFilter.checkRecord(current, process_flow.u_condition)) {
+      flows = new GlideRecord('u_snd_process_flow_element');
+        flows.addQuery('u_process_flow', process_flow.sys_id);
+        flows.addQuery('u_table', current.getRecordClassName());
+        flows.addQuery('u_active', true);
+        flows.orderBy('u_order');
+        flows.query();
+    
         break;
       }
     }
-
-    flows = new GlideRecord('x_snd_ipf_process_flow_element');
-    flows.addQuery('process_flow', process_flow.sys_id);
-    flows.addQuery('table', current.getRecordClassName());
-    flows.addQuery('active', true);
-    flows.orderBy('order');
-    flows.query();
   </g2:evaluate>
   <style type="text/css">
-    $[HTML:process_flow.style.css]
+    $[HTML:process_flow.u_style.u_css]
   </style>
-  <div style="text-align:center">
-    <ol class="snd_process_flow">
+  <div class="snd_process_flow">
+    <ol class="snd_process_flow_list">
       <j2:while test="$[flows.next()]">
         <g2:evaluate jelly="true">
           var evaluator,
@@ -43,16 +43,16 @@
 
           is_past = is_current == true ? true : false;
 
-          is_available = evaluator.evaluateScript(flows, 'access_script');
-          is_current = GlideFilter.checkRecord(current, flows.condition);
+          is_available = evaluator.evaluateScript(flows, 'u_access_script');
+          is_current = GlideFilter.checkRecord(current, flows.u_condition);
 
-          id = flows.table + '_' + flows.name;
+          id = flows.u_table + '_' + flows.u_name;
           
           if (is_available) {
-            on_click = flows.client_script + ';advancedProcessFlowControl(\'' + 
-              flows.table + '_' + flows.name + '\');';
+            on_click = flows.u_client_script + ';advancedProcessFlowControl(\'' + 
+              flows.u_table + '_' + flows.u_name + '\');';
           } else {
-            on_click = "";
+            on_click = '';
           }
 
           selected_id = is_current ? id : selected_id;
@@ -69,7 +69,7 @@
           </j2:otherwise>
         </j2:choose>
         <li id="$[id]" class="$[jvar_flow_class]" onClick="$[on_click]">
-          $[flows.label]
+          $[HTML:gs.getMessage(flows.u_label)]
         </li>
       </j2:while>
     </ol>
